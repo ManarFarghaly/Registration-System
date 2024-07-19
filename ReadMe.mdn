@@ -1,0 +1,108 @@
+# Setup Instructions
+
+## Prerequisites:
+
+1. Node.js (v22.4.1) installed on your system
+
+2. npm (Node Package Manager) installed along with Node.js
+
+3. Install dependencies:
+    `npm install`
+4. Set up environment variables:
+
+    * Create a .env file in the root directory of the project.
+
+    * Add the following environment variables:
+
+        1. PORT=3003
+
+        2. DB_CONNECTION_STRING=your-database-connection-string
+
+5. Start the development server:
+
+    * nodmon app
+
+    * The application should now be running on http://localhost:3003.
+
+## Technology Stack
+
+The login and registration system is built using the following technology stack:
+
+**Backend:**
+
+Language: Node.js (JavaScript)
+
+Framework: Express.js
+
+Database: MongoDB (using Mongoose for data modeling and querying)
+
+**Frontend:**
+
+Language: HTML, JavaScript
+
+Styling: CSS
+
+## Code Structure and Design Decisions
+
+ The project is structured as follows:
+````
+login-registration-system/
+│   ├── views/
+│   │   ├── login.js
+│   │   ├── Register.js
+│   │   └── dashBoard.js
+│   ├── public/
+│   └── script.js
+│   └── stylesheet.css
+├──models/
+│      └── user.js
+├── app.js 
+├── package.json
+└── README.md
+````
+## Design Decisions
+
+**Backend:**
+
+* Express.js: A popular and lightweight web framework for Node.js, providing a robust set of features for web and mobile applications.
+
+* MongoDB and Mongoose: MongoDB is a popular NoSQL database, and Mongoose is an Object Document Mapping (ODM) library that provides a higher-level abstraction for interacting with the database.
+
+## Code Structure
+
+* The project is divided into two main directories: client and server.
+
+* The client directory contains all the  components and the entry point for the frontend application.
+
+* The app.js contains the backend code, including the Express.js application
+
+* The models folder contains the models and user schema.
+
+This separation of concerns between the client and server allows for better maintainability, scalability, and potential future decoupling of the frontend and backend.
+
+## Assumptions and Limitations
+
+**Authentication:**
+
+* The implementation assumes a simple email/password-based authentication system. More advanced authentication methods, such as social login, two-factor authentication, or integration with external identity providers, are not included in this basic implementation.
+
+**Error Handling:**
+
+* The error handling in this implementation is basic and may not cover all possible error scenarios. In a production-ready application, more comprehensive error handling and user feedback would be necessary.
+
+**Data Validation:**
+
+* The validation of user inputs (username, email, phone number) is basic and may not cover all edge cases, But it consists of:
+
+**Password Security:**
+
+In this implementation, the passwords are stored hashed and salted using a secure algorithm, such as bcrypt.
+
+**Database Integration:**
+
+The implementation assumes a MongoDB database connection.
+
+**Styling and UI:**
+
+The UI is implemented using a CSS framework. In a production-ready application, more comprehensive styling, responsive design, and accessibility considerations would be necessary.
+

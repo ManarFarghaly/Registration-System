@@ -1,6 +1,6 @@
-const path = require('path');
 //Returns a function
 const express = require('express');
+const path = require('path');
 //Requiring the 3rd party package
 const morgan = require('morgan')
 //Requiring the 3rd party package (Mongoose),we use it to connect to database
@@ -12,7 +12,7 @@ const bcrypt = require('bcrypt');
 
 //express app, creating an instance to invoke that express app
 const app = express();
-
+const jwt = require('jsonwebtoken');
 //connect to MongoDB
 const dbURI = "mongodb+srv://manarabdulshafi03:2au2MTRpMK3khj9p@cluster0.fv8bm3z.mongodb.net/RegistrationSystem?retryWrites=true&w=majority&appName=Cluster0";
 
@@ -47,51 +47,40 @@ app.post('/Register', async (req, res) => {
                 // If a user with the same email already exists, return an error
                 return res.json({
                     redirect: '/Register.ejs',
-                    error: 'you are already registered'
+                    error: 'you are already registered',
                 });
             }
-            // Hash the password
-            // bcrypt.hash(password, 10, async (err, hashedPassword) => {
-            //     if (err) {
-            //         console.error(err);
-            //         res.json('/?error=Error registering user');
-            //     } else {
-            const newUser = new User({ username, email, phone, password });
-            await newUser.save();
-            res.redirect('/login.ejs');
-            // }
-        })
-
-        .catch((err) => {
-            console.log(err);
-            res.status(500).json({ error: 'Error registering user' });
+            //Hash the password
+            bcrypt.hash(password, 10, async (err, hashedPassword) => {
+                if (err) {
+                    console.error(err);
+                } else {
+                    const newUser = new User({ username, email, phone, password });
+                    await newUser.save();
+                    res.redirect('/login.ejs');
+                }
+            })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(500).json({ error: 'Error registering user' });
+                });
         });
+
 });
-
-
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
 
     User.findOne({ email })
         .then(result => {
-            if (!result || result.password !== password) {
-                //If user is not found, redirect to the login page with an error message
-                //this is for ensuring that result got answer or still
-                if (!result) {
-                    console.log('User not found');
-                } else if (result.password !== password) {
-                    console.log('Incorrect password:', result.password, password);
-                } else {
-                    console.log('Login successful:', result);
-                }
+            //If user is not found, redirect to the login page with an error message
+            if (!result) {
+                console.log('User not found');
                 res.json({
                     redirect: '/login.ejs',
                     error: 'Incorrect email or password'
                 });
             } else {
-                //res.render('dashBoard', { username: result.username, email: result.email, phone: result.phone });//do not modify
                 res.json({
-                    redirect: '/dashBoard',
                     username: result.username,
                     email: result.email,
                     phone: result.phone
@@ -100,8 +89,9 @@ app.post('/login', (req, res) => {
         })
         .catch((err) => {
             console.error(err);
-            //res.json({ error: 'Error logging in' });
-        })
+            res.json({ error: 'Error logging in' });
+        });
+
 });
 
 app.get('/dashBoard', (req, res) => {

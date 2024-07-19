@@ -30,11 +30,15 @@
         </div>
     </div>
     <script>
+        //express app, creating an instance to invoke that express app
+        //const renderDashboard = require('./dashBoard.ejs').renderDashboard;
+        import { renderDashboard } from ('./dashBoard.ejs');
         const loginForm = document.getElementById('Login');
         loginForm.addEventListener('submit', async (event) => {
             event.preventDefault();
             await loginUser();
         });
+
         async function loginUser() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
@@ -45,6 +49,7 @@
                 alert('Please enter your email and password');
                 return;
             }
+
             try {
                 // Send the login data to the server
                 const response = await fetch('/login', {
@@ -53,36 +58,26 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ email, password })
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            // Display the error message to the user
-                            alert(data.error);
-                        } else if (data.redirect) {
-                            // Redirect the user to the dashboard
-                            console.log("see me");
-                            renderDashboard(data);
-                            window.location.href = data.redirect;
-                        }
-                    })
+                });
+
+                if (!response.ok) {
+                    // Handle error responses from the server
+                    const errorData = await response.json();
+                    alert(errorData.error);
+                    return;
+                }
+
+                // Handle successful response from the server
+                const data = await response.json();
+                console.log('', email, password);
+                renderDashboard(data);
+                // Redirect the user to the /dashBoard route
+                window.location.href = '/dashBoard';
             } catch (error) {
                 console.error('Error logging in:', error);
-            };
+            }
         }
-        function renderDashboard(userData) {
-            // Render the user data on the dashboard
-            const userTableBody = document.getElementById('user-table-body');
-            userTableBody.innerHTML = `
-            <tr>
-              <td>${userData.username}</td>
-              <td>${userData.email}</td>
-              <td>${userData.phone}</td>
-            </tr>
-          `;
-            // Show the dashboard
-            document.querySelector('.dashBoard-container').style.display = 'block';
-        }
+
     </script>
 </body>
 

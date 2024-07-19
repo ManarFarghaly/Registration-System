@@ -78,11 +78,12 @@
                     if (data.error) {
                         alert(data.error);
                         existingUserMessage.style.display = 'block';
+                        window.location.href = data.redirect;
                     } else {
                         window.location.href = data.redirect;
                     }
                 });
-            // });
+
         } 
     </script>
 </body>

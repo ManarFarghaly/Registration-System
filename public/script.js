@@ -1,19 +1,14 @@
 // get the registration and login forms
-
 const registrationForm = document.getElementById('Registration');
 const loginForm = document.getElementById('Login');
 const existingUserMessage = document.getElementById('existingUserMessage');
-const loginButton = document.getElementById("loginButton");
+
 
 registrationForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     await registerUser();
 });
 
-loginButton.addEventListener('click', async (event) => {
-    //event.preventDefault();
-    await loginUser();
-});
 
 
 async function registerUser() {
@@ -45,57 +40,6 @@ async function registerUser() {
                 window.location.href = data.redirect;
             }
         });
-    // });
-} //catch (error) {
-//     //console.error('Error registering user:', error);
-//     //alert('An error occurred during registration. Please try again later.');
-// }
 
-async function loginUser() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    // Validate the form data
-    if (!email || !password) {
-        alert('Please enter your email and password');
-        return;
-    }
-
-    try {
-        // Send the login data to the server
-        const response = await fetch('/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    // Display the error message to the user
-                    alert(data.error);
-                } else if (data.redirect) {
-                    // Redirect the user to the dashboard
-                    renderDashboard(data);
-                    window.location.href = data.redirect;
-                }
-            })
-    } catch (error) {
-        console.error('Error logging in:', error);
-    };
 }
 
-function renderDashboard(userData) {
-    // Render the user data on the dashboard
-    const userTableBody = document.getElementById('user-table-body');
-    userTableBody.innerHTML = `
-    <tr>
-      <td>${userData.username}</td>
-      <td>${userData.email}</td>
-      <td>${userData.phone}</td>
-    </tr>
-  `;
-    // Show the dashboard
-    document.querySelector('.dashBoard-container').style.display = 'block';
-}
