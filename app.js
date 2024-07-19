@@ -15,7 +15,9 @@ const app = express();
 
 //connect to MongoDB
 const dbURI = "mongodb+srv://manarabdulshafi03:2au2MTRpMK3khj9p@cluster0.fv8bm3z.mongodb.net/RegistrationSystem?retryWrites=true&w=majority&appName=Cluster0";
+
 mongoose.connect(dbURI)
+    .then(console.log("connected successfully"))
     .then((result) => app.listen(3003))
     .catch((err) => console.log(err));
 //we will not go to step of listening to request for the page till the connection with database happens
@@ -70,14 +72,22 @@ app.post('/Register', async (req, res) => {
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
 
-    User.findOne({ email, password })
+    User.findOne({ email })
         .then(result => {
-            if (!result) {
-                // If user is not found, redirect to the login page with an error message
-                // res.json({
-                //     redirect: '/login.ejs',
-                //     error: 'Incorrect email or password'
-                // });
+            if (!result || result.password !== password) {
+                //If user is not found, redirect to the login page with an error message
+                //this is for ensuring that result got answer or still
+                if (!result) {
+                    console.log('User not found');
+                } else if (result.password !== password) {
+                    console.log('Incorrect password:', result.password, password);
+                } else {
+                    console.log('Login successful:', result);
+                }
+                res.json({
+                    redirect: '/login.ejs',
+                    error: 'Incorrect email or password'
+                });
             } else {
                 //res.render('dashBoard', { username: result.username, email: result.email, phone: result.phone });//do not modify
                 res.json({
@@ -90,7 +100,7 @@ app.post('/login', (req, res) => {
         })
         .catch((err) => {
             console.error(err);
-            // res.json({ error: 'Error logging in' });
+            //res.json({ error: 'Error logging in' });
         })
 });
 

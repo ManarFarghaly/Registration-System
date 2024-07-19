@@ -13,7 +13,7 @@
         <h2>Login</h2>
         <div class="LoginForm">
             <form id="Login" action="/login" method="POST">
-                <div class="mail">
+                <div class="email">
                     <input type="email" id="email" required placeholder="Enter your email" name="email"
                         pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address">
                 </div>
@@ -24,12 +24,12 @@
                 </div>
                 <br>
                 <div class="Login">
-                    <button type="button" id="loginbutton">Login</button>
+                    <button type="submit" id="loginbutton">Login</button>
                 </div>
             </form>
         </div>
     </div>
-    <script type="text/javascript" src="/script.js">
+    <script>
         const loginForm = document.getElementById('Login');
         loginForm.addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -38,6 +38,7 @@
         async function loginUser() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            console.log('Logging in with:', { email, password });
 
             // Validate the form data
             if (!email || !password) {
