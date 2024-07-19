@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Registration System</title>
+    <!-- any variable declared in rendering so the views can see it and repond to its dynamic changes -->
+    <link rel="stylesheet" href="/stylesheet.css">
+</head>
+
+<body>
+    <nav>
+        <a href="./login.ejs">Login</a>
+    </nav>
+    <div class="container">
+        <h2>Register</h2>
+        <div id="existingUserMessage" class="error" style="display: none">
+            You already have an account. Please log in</div>
+        <div class="RegisterForm">
+            <form id="Registration" action="/Register" method="POST">
+                <div class="forminput">
+                    <input type="text" id="username" required placeholder="Username" name="username"
+                        title="Username should only contain letters and numbers">
+                </div>
+                <br>
+                <div class="forminput">
+                    <input type="email" id="mail" required placeholder="Enter your email" name="email"
+                        title="Please enter a valid email address">
+                    <!--  pattern="^[a-zA-Z0-9]+$" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" pattern="[0-9]{10,13}"
+                        -->
+                </div>
+                <br>
+                <div class="forminput">
+                    <input type="tel" id="phone" placeholder="Enter your phone" name="phone"
+                        title="Phone number should contain 10-13 digits">
+                </div>
+                <br>
+                <div class="forminput">
+                    <input type="password" id="password" placeholder="Create your password" name="password"
+                        minlength="8" title="Password should be at least 8 characters long">
+                </div>
+                <br>
+                <div class="forminput">
+                    <button type="submit">Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="/script.js">
+        const registrationForm = document.getElementById('Registration');
+        registrationForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            await registerUser();
+        });
+        async function registerUser() {
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+
+            // Validate the form data
+            if (!username || !email || !phone || !password) {
+                alert('Please fill in all the fields');
+                return;
+            }
+
+            // Send the registration data to the server
+            const response = await fetch('/Register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, email, phone, password })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        existingUserMessage.style.display = 'block';
+                    } else {
+                        window.location.href = data.redirect;
+                    }
+                });
+            // });
+        } 
+    </script>
+</body>
+
+</html>

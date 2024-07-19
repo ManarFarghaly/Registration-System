@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login System</title>
+    <link rel="stylesheet" href="/stylesheet.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <div class="LoginForm">
+            <form id="Login" action="/login" method="POST">
+                <div class="mail">
+                    <input type="email" id="email" required placeholder="Enter your email" name="email"
+                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address">
+                </div>
+                <br>
+                <div class="password">
+                    <input type="password" id="password" placeholder="password" name="password" minlength="8"
+                        title="Password should be at least 8 characters long">
+                </div>
+                <br>
+                <div class="Login">
+                    <button type="button" id="loginbutton">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript" src="/script.js">
+        const loginForm = document.getElementById('Login');
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            await loginUser();
+        });
+        async function loginUser() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Validate the form data
+            if (!email || !password) {
+                alert('Please enter your email and password');
+                return;
+            }
+            try {
+                // Send the login data to the server
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            // Display the error message to the user
+                            alert(data.error);
+                        } else if (data.redirect) {
+                            // Redirect the user to the dashboard
+                            console.log("see me");
+                            renderDashboard(data);
+                            window.location.href = data.redirect;
+                        }
+                    })
+            } catch (error) {
+                console.error('Error logging in:', error);
+            };
+        }
+        function renderDashboard(userData) {
+            // Render the user data on the dashboard
+            const userTableBody = document.getElementById('user-table-body');
+            userTableBody.innerHTML = `
+            <tr>
+              <td>${userData.username}</td>
+              <td>${userData.email}</td>
+              <td>${userData.phone}</td>
+            </tr>
+          `;
+            // Show the dashboard
+            document.querySelector('.dashBoard-container').style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>
