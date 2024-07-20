@@ -55,7 +55,7 @@ app.post('/Register', async (req, res) => {
                 if (err) {
                     console.error(err);
                 } else {
-                    const newUser = new User({ username, email, phone, password });
+                    const newUser = new User({ username, email, phone, password: hashedPassword });
                     await newUser.save();
                     res.redirect('/login.ejs');
                 }

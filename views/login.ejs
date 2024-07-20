@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -23,60 +23,17 @@
                         title="Password should be at least 8 characters long">
                 </div>
                 <br>
-                <div class="Login">
-                    <button type="submit" id="loginbutton">Login</button>
+                <div class="loginbutton">
+                    <button type="submit" id="submit">Login</button>
                 </div>
             </form>
         </div>
     </div>
-    <script>
+    <script src="/script.js">
         //express app, creating an instance to invoke that express app
         //const renderDashboard = require('./dashBoard.ejs').renderDashboard;
-        import { renderDashboard } from ('./dashBoard.ejs');
-        const loginForm = document.getElementById('Login');
-        loginForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            await loginUser();
-        });
-
-        async function loginUser() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            console.log('Logging in with:', { email, password });
-
-            // Validate the form data
-            if (!email || !password) {
-                alert('Please enter your email and password');
-                return;
-            }
-
-            try {
-                // Send the login data to the server
-                const response = await fetch('/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email, password })
-                });
-
-                if (!response.ok) {
-                    // Handle error responses from the server
-                    const errorData = await response.json();
-                    alert(errorData.error);
-                    return;
-                }
-
-                // Handle successful response from the server
-                const data = await response.json();
-                console.log('', email, password);
-                renderDashboard(data);
-                // Redirect the user to the /dashBoard route
-                window.location.href = '/dashBoard';
-            } catch (error) {
-                console.error('Error logging in:', error);
-            }
-        }
+        //import { renderDashboard } from ('/public/script.js');
+        // Your code that accesses the DOM
 
     </script>
 </body>

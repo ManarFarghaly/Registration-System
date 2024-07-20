@@ -26,22 +26,7 @@
         </div>
         <a href="./Register.ejs">Logout</a>
     </div>
-    <script>
-        function renderDashboard(userData) {
-            // Render the user data on the dashboard
-            const userTableBody = document.getElementById('user-table-body');
-            userTableBody.innerHTML = `
-            <tr>
-              <td>${userData.username}</td>
-              <td>${userData.email}</td>
-              <td>${userData.phone}</td>
-            </tr>
-          `;
-            // Show the dashboard
-            document.querySelector('.dashBoard-container').style.display = 'block';
-        }
-
-        export { renderDashboard as renderDashboard };
+    <script src="/script.js" defer>
     </script>
 </body>
 
