@@ -28,6 +28,7 @@ app.set('view engine', 'ejs');
 
 //middleware and static files that we want to make public
 app.use(express.static('public'));
+app.use(express.json());
 //for accepting form data
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -38,6 +39,11 @@ app.get('/', (req, res) => {
 app.get('/login.ejs', (req, res) => {
     res.render('login', { error: null });
 });
+
+app.get('/dashBoard', (req, res) => {
+    res.render('dashBoard', { error: null });
+});
+
 app.post('/Register', async (req, res) => {
     const { username, email, phone, password } = req.body;
     // Check if a user with the same email already exists
@@ -69,7 +75,7 @@ app.post('/Register', async (req, res) => {
 });
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
-
+    console.log('User not found: ', email, password);
     User.findOne({ email })
         .then(result => {
             //If user is not found, redirect to the login page with an error message
@@ -94,11 +100,19 @@ app.post('/login', (req, res) => {
 
 });
 
-app.get('/dashBoard', (req, res) => {
-    console.log("iam here3");
-    const { username, email, phone } = req.query;
-    res.render('dashBoard', { username, email, phone });//do not modify
-});
+
+// app.post('/dashBoard', (req, res) => {
+//     console.log("iam here3");
+//     const { username, email, phone } = req.body;
+//     console.log("iam here3: ", username, email, phone);
+//     res.json({
+//         username,
+//         email,
+//         phone
+//     });
+
+//     //res.render('dashBoard', { username, email, phone });//do not modify
+// });
 
 app.use((req, res) => {
     res.status(404).render('404');

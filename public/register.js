@@ -4,7 +4,6 @@ window.onload = function () {
     registrationForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         await registerUser();
-        console.log('r form submitted!');
     });
 }
 async function registerUser() {
