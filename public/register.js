@@ -17,24 +17,27 @@ async function registerUser() {
         alert('Please fill in all the fields');
         return;
     }
-
-    // Send the registration data to the server
-    const response = await fetch('/Register', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ username, email, phone, password })
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                alert(data.error);
-                existingUserMessage.style.display = 'block';
-                window.location.href = data.redirect;
-            } else {
-                window.location.href = data.redirect;
-            }
-        });
+    try {
+        // Send the registration data to the server
+        const response = await fetch('/Register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, email, phone, password })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    existingUserMessage.style.display = 'block';
+                    window.location.href = data.redirect;
+                } else {
+                    window.location.href = data.redirect;
+                }
+            });
+    } catch (err) {
+        console.error(err);
+    }
 
 }

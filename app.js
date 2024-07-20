@@ -32,7 +32,9 @@ app.use(express.json());
 //for accepting form data
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-// Routes
+
+
+// Routes    
 app.get('/', (req, res) => {
     res.render('Register.ejs', { error: null });
 });
@@ -47,40 +49,48 @@ app.get('/dashBoard', (req, res) => {
 app.post('/Register', async (req, res) => {
     const { username, email, phone, password } = req.body;
     // Check if a user with the same email already exists
+    refreshDatabase();
     User.findOne({ email })
         .then(async (existingUser) => {
             if (existingUser) {
                 // If a user with the same email already exists, return an error
                 return res.json({
-                    redirect: '/Register.ejs',
-                    error: 'you are already registered',
+                    redirect: '/',
+                    error: 'you are already registered . please login',
                 });
             }
-            //Hash the password
-            bcrypt.hash(password, 10, async (err, hashedPassword) => {
-                if (err) {
-                    console.error(err);
-                } else {
-                    const newUser = new User({ username, email, phone, password: hashedPassword });
-                    await newUser.save();
-                    res.redirect('/login.ejs');
-                }
-            })
-                .catch((err) => {
-                    console.log(err);
-                    res.status(500).json({ error: 'Error registering user' });
-                });
+            try {
+                //Hash the password
+                bcrypt.hash(password, 10, async (err, hashedPassword) => {
+                    if (err) {
+                        console.error(err);
+                        console.log("erro here");
+                    } else {
+                        const newUser = new User({ username, email, phone, password: hashedPassword });
+                        await newUser.save();
+                        //res.redirect('/login.ejs');
+                        res.json({
+                            redirect: '/login.ejs'
+                        });
+                    }
+                })
+            } catch (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Error registering user' });
+            };
+        }).catch(err => {
+            console.error(err);
+            res.status(500).json({ error: 'can not find your account' });
         });
-
 });
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
-    console.log('User not found: ', email, password);
+    refreshDatabase();
     User.findOne({ email })
         .then(result => {
             //If user is not found, redirect to the login page with an error message
             if (!result) {
-                console.log('User not found');
+
                 res.json({
                     redirect: '/login.ejs',
                     error: 'Incorrect email or password'
@@ -100,20 +110,21 @@ app.post('/login', (req, res) => {
 
 });
 
-
-// app.post('/dashBoard', (req, res) => {
-//     console.log("iam here3");
-//     const { username, email, phone } = req.body;
-//     console.log("iam here3: ", username, email, phone);
-//     res.json({
-//         username,
-//         email,
-//         phone
-//     });
-
-//     //res.render('dashBoard', { username, email, phone });//do not modify
-// });
-
 app.use((req, res) => {
     res.status(404).render('404');
 });
+
+
+//Helper Function
+
+async function refreshDatabase() {
+    try {
+        // Get the 'users' collection from the connected Mongoose database
+        const usersCollection = mongoose.connection.db.collection('users');
+
+        // Refresh the database by executing a simple query
+        await usersCollection.find({}).limit(1).toArray();
+    } catch (err) {
+        console.error(err);
+    }
+}
